@@ -87,8 +87,6 @@ spec:
     maxReplicas: 10
     replicas: 1
   openwhisk:
-    id: bc2b0a37-0554-4658-9ebe-ae068eb1aa22
-    password: 45t2FZC1q1bv6OYUztZUjkYFaVNs5klaviHoE6gFvgEedu9akiE1YW6lChOxUgJb
     url: >-
       https://openwhisk.ng.bluemix.net/api/v1/namespaces/jalcorn%40us.ibm.com_dev/actions/PostLoyaltyLevelToSlack
   stockQuote:
@@ -207,7 +205,7 @@ spec:
     replicas: 1
     url: 'http://{{ .Release.Name }}-looper-service:9080/looper'
   vault:
-    enabled: true
+    enabled: false
     path: ceh/data/stocktrader/credentials
     role: stocktrader
   cloudant:
