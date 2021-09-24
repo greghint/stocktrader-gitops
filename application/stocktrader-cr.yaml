@@ -120,7 +120,7 @@ spec:
     cpuThreshold: 75
     image:
       repository: quay.io/gas_stocktrader/portfolio
-      tag: "v0.0.6"
+      tag: "v0.0.7"
     maxReplicas: 10
     replicas: 2
     url: 'http://{{ .Release.Name }}-portfolio-service:9080/portfolio'
