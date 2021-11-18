@@ -172,7 +172,7 @@ spec:
     enabled: true
     image:
       repository: quay.io/gas_stocktrader/trader
-      tag: "a5a91b62fcec756d79978104b9c84edda5fd782b"
+      tag: "622763bb8f1069b2367b2e28074d15991253a89f"
     maxReplicas: 10
     replicas: 1
   tradeHistory:
