@@ -1,0 +1,175 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  annotations:
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"ceh-broker"}]'
+    meta.helm.sh/release-name: ceh
+    meta.helm.sh/release-namespace: stocktrader-tb
+    prism.subkind: Liberty
+  name: ceh-trader
+  labels:
+    app: ceh-stock-trader
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trader
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: trader
+      annotations:
+        git-repo: 'https://github.com/stocktrader-ops/trader'
+        prometheus.io/port: '9080'
+        prometheus.io/scrape: 'true'
+    spec:
+      containers:
+        - name: trader
+          image: 'quay.io/gas_stocktrader/trader:4a0e33d8828a9a8792e9f54aa6df4c2aa55e66c5'
+          ports:
+            - containerPort: 9080
+              protocol: TCP
+            - containerPort: 9443
+              protocol: TCP
+          env:
+            - name: AUTH_TYPE
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: auth.type
+            - name: TRACE_SPEC
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: trace.spec
+                  optional: true
+            - name: JWT_AUDIENCE
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: jwt.audience
+            - name: JWT_ISSUER
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: jwt.issuer
+            - name: LDAP_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: ldap.host
+                  optional: true
+            - name: LDAP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: ldap.port
+                  optional: true
+            - name: LDAP_BASE_DN
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: ldap.baseDN
+                  optional: true
+            - name: LDAP_REALM
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: ldap.realm
+                  optional: true
+            - name: BROKER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: broker.url
+                  optional: true
+            - name: COLLECTOR_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: collector.url
+                  optional: true
+            - name: COLLECTOR_ENABLED
+              value: 'false'
+            - name: S3_ENABLED
+              value: 'false'
+            - name: S3_BUCKET
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: s3.bucket
+                  optional: true
+            - name: S3_LOCATION
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: s3.location
+                  optional: true
+            - name: S3_ENDPOINT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: s3.endpointUrl
+                  optional: true
+            - name: S3_RESOURCE_INSTANCE_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: s3.resourceInstanceId
+                  optional: true
+            - name: S3_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ceh-credentials
+                  key: s3.apiKey
+                  optional: true
+            - name: OIDC_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  name: ceh-credentials
+                  key: oidc.clientId
+                  optional: true
+            - name: OIDC_CLIENTSECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ceh-credentials
+                  key: oidc.clientSecret
+                  optional: true
+            - name: OIDC_DISCOVERY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: oidc.discoveryUrl
+                  optional: true
+            - name: cert_defaultTrustStore
+              valueFrom:
+                configMapKeyRef:
+                  name: ceh-config
+                  key: ssl.certs
+                  optional: true
+          resources:
+            limits:
+              cpu: 500m
+              ephemeral-storage: 256Mi
+              memory: 500Mi
+            requests:
+              cpu: 250m
+              ephemeral-storage: 32Mi
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
