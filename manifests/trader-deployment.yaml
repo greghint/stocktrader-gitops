@@ -33,6 +33,13 @@ spec:
               protocol: TCP
             - containerPort: 9443
               protocol: TCP
+          readinessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /health/ready
+              port: 9443
+            initialDelaySeconds: 30
+            periodSeconds: 5              
           env:
             - name: AUTH_TYPE
               valueFrom:
