@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: trader
-          image: 'quay.io/gas_stocktrader/trader:5945ce9ba37282321a8118c0e452d9b20e38f8fc'
+          image: 'quay.io/gas_stocktrader/trader:d1b0591de51838fa79733ce207092adf5b934f64'
           ports:
             - containerPort: 9080
               protocol: TCP
@@ -39,7 +39,7 @@ spec:
               path: /health/ready
               port: 9443
             initialDelaySeconds: 30
-            periodSeconds: 5              
+            periodSeconds: 5
           env:
             - name: AUTH_TYPE
               valueFrom:
