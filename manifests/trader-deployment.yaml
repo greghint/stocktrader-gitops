@@ -38,7 +38,7 @@ spec:
               scheme: HTTPS
               path: /health/ready
               port: 9443
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 5
           env:
             - name: AUTH_TYPE
