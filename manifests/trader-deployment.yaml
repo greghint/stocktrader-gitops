@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: trader
-          image: 'quay.io/gas_stocktrader/trader:272f7984f6005343413d7338324bc22e510647a8'
+          image: 'quay.io/gas_stocktrader/trader:aa9b149a98de91e196722b0e68f1356b9d95e7f6'
           ports:
             - containerPort: 9080
               protocol: TCP
